@@ -26,11 +26,8 @@ const Index = () => {
 
   const categories = [
     { value: 'all', label: 'Все категории' },
-    { value: 'design', label: 'Дизайн' },
-    { value: 'development', label: 'Разработка' },
-    { value: 'writing', label: 'Копирайтинг' },
-    { value: 'marketing', label: 'Маркетинг' },
-    { value: 'translation', label: 'Переводы' },
+    { value: 'remote', label: 'Удалёнка' },
+    { value: 'onsite', label: 'Живая подработка' },
   ];
 
   const [jobs, setJobs] = useState<Job[]>([
@@ -38,7 +35,7 @@ const Index = () => {
       id: 1,
       title: 'Разработка лендинга для стартапа',
       description: 'Требуется создать современный одностраничный сайт с адаптивным дизайном',
-      category: 'development',
+      category: 'remote',
       price: '25 000 ₽',
       rating: 4.8,
       reviews: 24,
@@ -49,7 +46,7 @@ const Index = () => {
       id: 2,
       title: 'Дизайн логотипа для кафе',
       description: 'Нужен минималистичный логотип в современном стиле',
-      category: 'design',
+      category: 'remote',
       price: '8 000 ₽',
       rating: 4.9,
       reviews: 156,
@@ -60,7 +57,7 @@ const Index = () => {
       id: 3,
       title: 'Копирайтинг статей для блога',
       description: 'Написание SEO-оптимизированных статей на технологическую тематику',
-      category: 'writing',
+      category: 'remote',
       price: '3 000 ₽',
       rating: 4.7,
       reviews: 89,
@@ -71,7 +68,7 @@ const Index = () => {
       id: 4,
       title: 'Настройка рекламы в Яндекс.Директ',
       description: 'Требуется специалист для настройки и ведения рекламных кампаний',
-      category: 'marketing',
+      category: 'onsite',
       price: '15 000 ₽',
       rating: 4.6,
       reviews: 42,
@@ -82,7 +79,7 @@ const Index = () => {
       id: 5,
       title: 'Перевод технической документации',
       description: 'Перевод с английского на русский, тематика IT',
-      category: 'translation',
+      category: 'remote',
       price: '1 500 ₽',
       rating: 5.0,
       reviews: 213,
@@ -93,7 +90,7 @@ const Index = () => {
       id: 6,
       title: 'Создание презентации для инвесторов',
       description: 'Нужна качественная презентация проекта, до 20 слайдов',
-      category: 'design',
+      category: 'onsite',
       price: '12 000 ₽',
       rating: 4.8,
       reviews: 67,
@@ -286,10 +283,8 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-4">Категории</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Дизайн</li>
-                <li>Разработка</li>
-                <li>Копирайтинг</li>
-                <li>Маркетинг</li>
+                <li>Удалёнка</li>
+                <li>Живая подработка</li>
               </ul>
             </div>
             <div>
