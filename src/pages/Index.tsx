@@ -6,13 +6,24 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
+import { PostJobDialog } from '@/components/PostJobDialog';
 
 interface Job {
   id: number;
   title: string;
   description: string;
   category: string;
-  price: string;
+  type?: 'employer' | 'worker';
+  city?: string;
+  address?: string;
+  date?: string;
+  duration?: string;
+  workersNeeded?: string;
+  teamSize?: string;
+  isBrigade?: boolean;
+  availableTime?: string;
+  hourlyRate?: string;
+  price?: string;
   rating: number;
   reviews: number;
   author: string;
@@ -23,6 +34,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
 
   const categories = [
     { value: 'all', label: 'Все категории' },
@@ -36,6 +48,7 @@ const Index = () => {
       title: 'Разработка лендинга для стартапа',
       description: 'Требуется создать современный одностраничный сайт с адаптивным дизайном',
       category: 'remote',
+      type: 'employer',
       price: '25 000 ₽',
       rating: 4.8,
       reviews: 24,
@@ -44,10 +57,17 @@ const Index = () => {
     },
     {
       id: 2,
-      title: 'Дизайн логотипа для кафе',
-      description: 'Нужен минималистичный логотип в современном стиле',
-      category: 'remote',
-      price: '8 000 ₽',
+      title: 'Помощь с переездом',
+      description: 'Нужна помощь с погрузкой и разгрузкой мебели',
+      category: 'onsite',
+      type: 'employer',
+      city: 'Москва',
+      address: 'ул. Ленина, 25',
+      date: '2024-12-28',
+      duration: '4 часа',
+      workersNeeded: '2',
+      hourlyRate: '500',
+      price: '500 ₽/час',
       rating: 4.9,
       reviews: 156,
       author: 'Мария К.',
@@ -55,10 +75,17 @@ const Index = () => {
     },
     {
       id: 3,
-      title: 'Копирайтинг статей для блога',
-      description: 'Написание SEO-оптимизированных статей на технологическую тематику',
-      category: 'remote',
-      price: '3 000 ₽',
+      title: 'Грузчик с опытом',
+      description: 'Опыт работы 5 лет, есть напарник. Работаем быстро и аккуратно',
+      category: 'onsite',
+      type: 'worker',
+      city: 'Москва',
+      availableTime: 'с 9:00 до 21:00',
+      duration: 'любая',
+      teamSize: '2',
+      isBrigade: true,
+      hourlyRate: '600',
+      price: '600 ₽/час',
       rating: 4.7,
       reviews: 89,
       author: 'Дмитрий П.',
@@ -66,10 +93,17 @@ const Index = () => {
     },
     {
       id: 4,
-      title: 'Настройка рекламы в Яндекс.Директ',
-      description: 'Требуется специалист для настройки и ведения рекламных кампаний',
+      title: 'Уборка квартиры после ремонта',
+      description: 'Требуется генеральная уборка двухкомнатной квартиры',
       category: 'onsite',
-      price: '15 000 ₽',
+      type: 'employer',
+      city: 'Санкт-Петербург',
+      address: 'Невский проспект, 100',
+      date: '2024-12-30',
+      duration: '6 часов',
+      workersNeeded: '1',
+      hourlyRate: '400',
+      price: '400 ₽/час',
       rating: 4.6,
       reviews: 42,
       author: 'Елена В.',
@@ -77,10 +111,11 @@ const Index = () => {
     },
     {
       id: 5,
-      title: 'Перевод технической документации',
-      description: 'Перевод с английского на русский, тематика IT',
+      title: 'Копирайтинг статей для блога',
+      description: 'Написание SEO-оптимизированных статей на технологическую тематику',
       category: 'remote',
-      price: '1 500 ₽',
+      type: 'employer',
+      price: '3 000 ₽',
       rating: 5.0,
       reviews: 213,
       author: 'Ирина С.',
@@ -88,10 +123,16 @@ const Index = () => {
     },
     {
       id: 6,
-      title: 'Создание презентации для инвесторов',
-      description: 'Нужна качественная презентация проекта, до 20 слайдов',
+      title: 'Разнорабочий',
+      description: 'Готов помочь с любыми хозяйственными работами. Пунктуален и ответственен',
       category: 'onsite',
-      price: '12 000 ₽',
+      type: 'worker',
+      city: 'Казань',
+      availableTime: 'выходные дни',
+      duration: 'от 2 до 8 часов',
+      teamSize: '1',
+      hourlyRate: '350',
+      price: '350 ₽/час',
       rating: 4.8,
       reviews: 67,
       author: 'Сергей Н.',
@@ -105,6 +146,15 @@ const Index = () => {
     } else {
       setFavorites([...favorites, id]);
     }
+  };
+
+  const handleAddJob = (newJob: any) => {
+    const job: Job = {
+      id: jobs.length + 1,
+      ...newJob,
+      price: newJob.hourlyRate ? `${newJob.hourlyRate} ₽/час` : newJob.price || '0 ₽',
+    };
+    setJobs([job, ...jobs]);
   };
 
   const filteredJobs = jobs.filter(job => {
@@ -121,7 +171,21 @@ const Index = () => {
       <CardHeader>
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <CardTitle className="text-xl mb-2">{job.title}</CardTitle>
+            <div className="flex items-center gap-2 mb-2">
+              <CardTitle className="text-xl">{job.title}</CardTitle>
+              {job.type === 'employer' && (
+                <Badge variant="default" className="bg-blue-500">
+                  <Icon name="Briefcase" size={12} className="mr-1" />
+                  Ищу работника
+                </Badge>
+              )}
+              {job.type === 'worker' && (
+                <Badge variant="default" className="bg-green-500">
+                  <Icon name="User" size={12} className="mr-1" />
+                  Ищу работу
+                </Badge>
+              )}
+            </div>
             <Badge variant="secondary" className="mb-2">
               {categories.find(c => c.value === job.category)?.label}
             </Badge>
@@ -142,6 +206,63 @@ const Index = () => {
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground mb-4">{job.description}</p>
+        
+        {job.city && (
+          <div className="space-y-2 text-sm mb-4">
+            <div className="flex items-center gap-2">
+              <Icon name="MapPin" size={16} className="text-muted-foreground" />
+              <span>{job.city}</span>
+              {job.address && <span className="text-muted-foreground">• {job.address}</span>}
+            </div>
+            
+            {job.type === 'employer' && (
+              <>
+                {job.date && (
+                  <div className="flex items-center gap-2">
+                    <Icon name="Calendar" size={16} className="text-muted-foreground" />
+                    <span>{new Date(job.date).toLocaleDateString('ru-RU')}</span>
+                  </div>
+                )}
+                {job.duration && (
+                  <div className="flex items-center gap-2">
+                    <Icon name="Clock" size={16} className="text-muted-foreground" />
+                    <span>{job.duration}</span>
+                  </div>
+                )}
+                {job.workersNeeded && (
+                  <div className="flex items-center gap-2">
+                    <Icon name="Users" size={16} className="text-muted-foreground" />
+                    <span>Требуется: {job.workersNeeded} чел.</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            {job.type === 'worker' && (
+              <>
+                {job.availableTime && (
+                  <div className="flex items-center gap-2">
+                    <Icon name="Clock" size={16} className="text-muted-foreground" />
+                    <span>Доступен: {job.availableTime}</span>
+                  </div>
+                )}
+                {job.duration && (
+                  <div className="flex items-center gap-2">
+                    <Icon name="Timer" size={16} className="text-muted-foreground" />
+                    <span>Длительность: {job.duration}</span>
+                  </div>
+                )}
+                {job.isBrigade && (
+                  <div className="flex items-center gap-2">
+                    <Icon name="Users" size={16} className="text-green-600" />
+                    <span className="font-medium text-green-600">Бригада ({job.teamSize} чел.)</span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Icon name="Star" size={16} className="fill-yellow-400 text-yellow-400" />
@@ -156,7 +277,7 @@ const Index = () => {
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <div className="text-2xl font-bold text-primary">{job.price}</div>
-        <Button>Откликнуться</Button>
+        <Button>{job.type === 'employer' ? 'Откликнуться' : 'Связаться'}</Button>
       </CardFooter>
     </Card>
   );
@@ -173,7 +294,7 @@ const Index = () => {
             <nav className="hidden md:flex items-center gap-6">
               <Button variant="ghost">Главная</Button>
               <Button variant="ghost">Поиск</Button>
-              <Button variant="ghost">Разместить</Button>
+              <Button onClick={() => setIsPostDialogOpen(true)}>Разместить</Button>
               <Button variant="ghost">Профиль</Button>
               <Button variant="ghost">
                 <Icon name="MessageSquare" size={20} />
@@ -301,7 +422,7 @@ const Index = () => {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Icon name="Mail" size={16} />
-                  info@rabotaryadom.ru
+                  info@rabotenka.ru
                 </li>
                 <li className="flex items-center gap-2">
                   <Icon name="Phone" size={16} />
@@ -315,6 +436,12 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <PostJobDialog 
+        open={isPostDialogOpen} 
+        onOpenChange={setIsPostDialogOpen}
+        onSubmit={handleAddJob}
+      />
     </div>
   );
 };
