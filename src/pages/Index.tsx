@@ -171,7 +171,7 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Icon name="Briefcase" size={32} className="text-primary" />
-              <h1 className="text-2xl font-bold">РаботаРядом</h1>
+              <h1 className="text-2xl font-bold">Работёнка</h1>
             </div>
             <nav className="hidden md:flex items-center gap-6">
               <Button variant="ghost">Главная</Button>
@@ -277,7 +277,7 @@ const Index = () => {
             <div>
               <h3 className="font-bold mb-4 flex items-center gap-2">
                 <Icon name="Briefcase" size={24} className="text-primary" />
-                РаботаРядом
+                Работёнка
               </h3>
               <p className="text-sm text-muted-foreground">
                 Платформа для поиска подработки и надежных исполнителей
@@ -316,7 +316,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2024 РаботаРядом. Все права защищены.
+            © 2024 Работёнка. Все права защищены.
           </div>
         </div>
       </footer>
